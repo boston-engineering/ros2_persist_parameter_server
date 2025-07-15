@@ -17,6 +17,7 @@
 #include <chrono>
 #include <fstream>
 #include <map>
+#include <iomanip>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 
@@ -386,7 +387,12 @@ void ParameterServer::SaveNode(YAML::Emitter& out, YAML::Node node, const std::s
           case rclcpp::ParameterType::PARAMETER_DOUBLE:
           {
             double value = parameter.as_double();
-            out << YAML::Value << value;
+            std::ostringstream oss;
+            oss << value;
+            if (oss.str().find('.') == std::string::npos) {
+              oss << ".0";
+            }
+            out << YAML::Value << oss.str();
             break;
           }
           case rclcpp::ParameterType::PARAMETER_STRING:
